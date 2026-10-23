@@ -19,4 +19,4 @@ COPY --from=builder /app/apps/order-service/dist ./apps/order-service/dist
 COPY --from=builder /app/libs ./libs
 
 EXPOSE 3000
-CMD ["node", "apps/order-service/dist/main.js"]
+CMD ["node", "apps/order-service/dist/apps/order-service/src/main.js"]

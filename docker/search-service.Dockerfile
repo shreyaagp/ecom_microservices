@@ -19,4 +19,4 @@ COPY --from=builder /app/apps/search-service/dist ./apps/search-service/dist
 COPY --from=builder /app/libs ./libs
 
 EXPOSE 3000
-CMD ["node", "apps/search-service/dist/main.js"]
+CMD ["node", "apps/search-service/dist/apps/search-service/src/main.js"]

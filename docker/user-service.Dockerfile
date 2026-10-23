@@ -19,4 +19,4 @@ COPY --from=builder /app/apps/user-service/dist ./apps/user-service/dist
 COPY --from=builder /app/libs ./libs
 
 EXPOSE 3000
-CMD ["node", "apps/user-service/dist/main.js"]
+CMD ["node", "apps/user-service/dist/apps/user-service/src/main.js"]

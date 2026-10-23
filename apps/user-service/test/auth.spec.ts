@@ -1,59 +1,116 @@
+
 import { UserGrpcController } from '../src/user.grpc.controller';
+import { UserService } from '../src/user.service';
 
 describe('UserGrpcController', () => {
   let controller: UserGrpcController;
+  let userService: {
+    createUser: jest.Mock;
+    getUser: jest.Mock;
+    validateToken: jest.Mock;
+    updateUser: jest.Mock;
+  };
 
   beforeEach(() => {
-    controller = new UserGrpcController();
+    userService = {
+      createUser: jest.fn(),
+      getUser: jest.fn(),
+      validateToken: jest.fn(),
+      updateUser: jest.fn(),
+    };
+
+    controller = new UserGrpcController(
+      userService as unknown as UserService,
+    );
   });
 
   describe('CreateUser', () => {
-    it('should return a user response with the provided email', () => {
-      const result = controller.createUser({
+    it('delegates registration to UserService', async () => {
+      const input = {
         email: 'test@example.com',
         password: 'StrongP@ss1',
         firstName: 'John',
         lastName: 'Doe',
-      });
+      };
+      const expected = {
+        id: 'user-123',
+        email: input.email,
+        firstName: 'John',
+        lastName: 'Doe',
+        isEmailVerified: false,
+      };
 
-      expect(result.email).toBe('test@example.com');
-      expect(result.firstName).toBe('John');
-      expect(result.lastName).toBe('Doe');
-      expect(result.isEmailVerified).toBe(false);
-      expect(result.id).toBeDefined();
+      userService.createUser.mockResolvedValue(expected);
+
+      await expect(controller.createUser(input)).resolves.toEqual(expected);
+      expect(userService.createUser).toHaveBeenCalledWith(input);
     });
   });
 
   describe('GetUser', () => {
-    it('should return a user by userId', () => {
-      const result = controller.getUser({ userId: 'user-123' });
+    it('delegates lookup to UserService', async () => {
+      const expected = {
+        id: 'user-123',
+        email: 'test@example.com',
+        firstName: 'John',
+        lastName: 'Doe',
+        isEmailVerified: false,
+      };
 
-      expect(result.id).toBe('user-123');
-      expect(result.email).toBeDefined();
+      userService.getUser.mockResolvedValue(expected);
+
+      await expect(
+        controller.getUser({ userId: 'user-123' }),
+      ).resolves.toEqual(expected);
+
+      expect(userService.getUser).toHaveBeenCalledWith('user-123');
     });
   });
 
   describe('ValidateToken', () => {
-    it('should return a token payload with roles', () => {
-      const result = controller.validateToken({ token: 'some-jwt-token' });
+    it('delegates token validation to UserService', async () => {
+      const expected = {
+        sub: 'user-123',
+        email: 'test@example.com',
+        roles: ['customer'],
+      };
 
-      expect(result.sub).toBeDefined();
-      expect(result.email).toBeDefined();
-      expect(result.roles).toEqual(expect.arrayContaining(['customer']));
+      userService.validateToken.mockResolvedValue(expected);
+
+      await expect(
+        controller.validateToken({ token: 'example-token' }),
+      ).resolves.toEqual(expected);
+
+      expect(userService.validateToken).toHaveBeenCalledWith(
+        'example-token',
+      );
     });
   });
 
   describe('UpdateUser', () => {
-    it('should return updated user fields', () => {
-      const result = controller.updateUser({
-        userId: 'user-123',
+    it('delegates profile updates to UserService', async () => {
+      const expected = {
+        id: 'user-123',
+        email: 'test@example.com',
+        firstName: 'Jane',
+        lastName: 'Smith',
+        isEmailVerified: false,
+      };
+
+      userService.updateUser.mockResolvedValue(expected);
+
+      await expect(
+        controller.updateUser({
+          userId: 'user-123',
+          firstName: 'Jane',
+          lastName: 'Smith',
+        }),
+      ).resolves.toEqual(expected);
+
+      expect(userService.updateUser).toHaveBeenCalledWith('user-123', {
         firstName: 'Jane',
         lastName: 'Smith',
       });
-
-      expect(result.id).toBe('user-123');
-      expect(result.firstName).toBe('Jane');
-      expect(result.lastName).toBe('Smith');
     });
   });
 });

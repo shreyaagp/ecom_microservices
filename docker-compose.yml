@@ -8,6 +8,9 @@ services:
     environment:
       PORT: 3000
       REDIS_URL: redis://redis:6379
+      USER_GRPC_URL: user-service:50051
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in your .env file}
+      JWT_EXPIRATION: 3600
     depends_on:
       - redis
       - kafka
@@ -28,6 +31,9 @@ services:
     environment:
       PORT: 3001
       USER_GRPC_URL: 0.0.0.0:50051
+      DATABASE_URL: postgres://postgres:postgres@postgresql:5432/ecommerce
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in your .env file}
+      JWT_EXPIRATION: 3600
     depends_on:
       - postgresql
       - redis
@@ -148,7 +154,8 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
@@ -168,7 +175,7 @@ services:
     depends_on:
       - kafka
     environment:
-      KAFKA_BROKERCONNECT: kafka:9092
+      KAFKA_BROKERCONNECT: kafka:29092
     ports:
       - '9000:9000'
 

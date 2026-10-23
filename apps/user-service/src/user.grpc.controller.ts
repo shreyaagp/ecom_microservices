@@ -1,5 +1,8 @@
+
 import { Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
+
+import { UserService } from './user.service';
 
 interface CreateUserRequest {
   email: string;
@@ -21,72 +24,40 @@ interface UpdateUserRequest {
   firstName: string;
   lastName: string;
 }
-
-interface UserResponse {
-  id: string;
+interface AuthenticateUserRequest {
   email: string;
-  firstName: string;
-  lastName: string;
-  isEmailVerified: boolean;
+  password: string;
 }
 
-interface TokenPayload {
-  sub: string;
-  email: string;
-  roles: string[];
-}
-
-/**
- * gRPC server implementation for the UserService.
- *
- * Provides: `CreateUser`, `GetUser`, `ValidateToken`, `UpdateUser`.
- * Methods return stub data — replace with repository calls in production.
- */
 @Controller()
 export class UserGrpcController {
-  /** Create a new user account and return the user record. */
+  constructor(private readonly userService: UserService) {}
+
   @GrpcMethod('UserService', 'CreateUser')
-  createUser(request: CreateUserRequest): UserResponse {
-    return {
-      id: 'stub-user-id',
-      email: request.email,
-      firstName: request.firstName,
-      lastName: request.lastName,
-      isEmailVerified: false,
-    };
+  createUser(request: CreateUserRequest) {
+    return this.userService.createUser(request);
   }
 
-  /** Look up a user by ID. */
   @GrpcMethod('UserService', 'GetUser')
-  getUser(request: GetUserRequest): UserResponse {
-    return {
-      id: request.userId,
-      email: 'user@example.com',
-      firstName: 'Demo',
-      lastName: 'User',
-      isEmailVerified: true,
-    };
+  getUser(request: GetUserRequest) {
+    return this.userService.getUser(request.userId);
   }
 
-  /** Validate a JWT and return the decoded payload. */
   @GrpcMethod('UserService', 'ValidateToken')
-  validateToken(_request: ValidateTokenRequest): TokenPayload {
-    return {
-      sub: 'stub-user-id',
-      email: 'user@example.com',
-      roles: ['customer'],
-    };
+  validateToken(request: ValidateTokenRequest) {
+    return this.userService.validateToken(request.token);
   }
 
-  /** Update a user's profile fields. */
   @GrpcMethod('UserService', 'UpdateUser')
-  updateUser(request: UpdateUserRequest): UserResponse {
-    return {
-      id: request.userId,
-      email: 'user@example.com',
+  updateUser(request: UpdateUserRequest) {
+    return this.userService.updateUser(request.userId, {
       firstName: request.firstName,
       lastName: request.lastName,
-      isEmailVerified: true,
-    };
+    });
   }
+  @GrpcMethod('UserService', 'AuthenticateUser')
+  authenticateUser(request: AuthenticateUserRequest) {
+    return this.userService.authenticateUser(request.email, request.password);
+}
+
 }

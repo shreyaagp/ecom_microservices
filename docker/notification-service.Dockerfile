@@ -19,4 +19,4 @@ COPY --from=builder /app/apps/notification-service/dist ./apps/notification-serv
 COPY --from=builder /app/libs ./libs
 
 EXPOSE 3000
-CMD ["node", "apps/notification-service/dist/main.js"]
+CMD ["node", "apps/notification-service/dist/apps/notification-service/src/main.js"]

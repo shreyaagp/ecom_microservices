@@ -19,4 +19,4 @@ COPY --from=builder /app/apps/payment-service/dist ./apps/payment-service/dist
 COPY --from=builder /app/libs ./libs
 
 EXPOSE 3000
-CMD ["node", "apps/payment-service/dist/main.js"]
+CMD ["node", "apps/payment-service/dist/apps/payment-service/src/main.js"]

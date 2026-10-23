@@ -19,4 +19,4 @@ COPY --from=builder /app/apps/inventory-service/dist ./apps/inventory-service/di
 COPY --from=builder /app/libs ./libs
 
 EXPOSE 3000
-CMD ["node", "apps/inventory-service/dist/main.js"]
+CMD ["node", "apps/inventory-service/dist/apps/inventory-service/src/main.js"]

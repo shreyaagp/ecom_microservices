@@ -1,3 +1,4 @@
+
 syntax = "proto3";
 
 package user;
@@ -7,6 +8,7 @@ service UserService {
   rpc GetUser(GetUserRequest) returns (UserResponse);
   rpc ValidateToken(ValidateTokenRequest) returns (TokenPayload);
   rpc UpdateUser(UpdateUserRequest) returns (UserResponse);
+  rpc AuthenticateUser(AuthenticateUserRequest) returns (AuthenticateUserResponse);
 }
 
 message CreateUserRequest {
@@ -28,6 +30,18 @@ message UpdateUserRequest {
   string userId = 1;
   string firstName = 2;
   string lastName = 3;
+}
+
+message AuthenticateUserRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message AuthenticateUserResponse {
+  bool authenticated = 1;
+  string userId = 2;
+  string email = 3;
+  repeated string roles = 4;
 }
 
 message TokenPayload {
