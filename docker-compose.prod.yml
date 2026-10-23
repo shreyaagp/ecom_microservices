@@ -1,0 +1,52 @@
+version: '3.9'
+
+services:
+  api-gateway:
+    build:
+      context: .
+      dockerfile: docker/api-gateway.Dockerfile
+    ports:
+      - '3000:3000'
+    restart: unless-stopped
+
+  user-service:
+    build:
+      context: .
+      dockerfile: docker/user-service.Dockerfile
+    restart: unless-stopped
+
+  product-service:
+    build:
+      context: .
+      dockerfile: docker/product-service.Dockerfile
+    restart: unless-stopped
+
+  order-service:
+    build:
+      context: .
+      dockerfile: docker/order-service.Dockerfile
+    restart: unless-stopped
+
+  inventory-service:
+    build:
+      context: .
+      dockerfile: docker/inventory-service.Dockerfile
+    restart: unless-stopped
+
+  payment-service:
+    build:
+      context: .
+      dockerfile: docker/payment-service.Dockerfile
+    restart: unless-stopped
+
+  notification-service:
+    build:
+      context: .
+      dockerfile: docker/notification-service.Dockerfile
+    restart: unless-stopped
+
+  search-service:
+    build:
+      context: .
+      dockerfile: docker/search-service.Dockerfile
+    restart: unless-stopped

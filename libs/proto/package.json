@@ -1,0 +1,11 @@
+{
+  "name": "@app/proto",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "echo 'proto contracts are source artifacts'",
+    "lint": "echo 'no lint target for proto'",
+    "typecheck": "echo 'no typecheck target for proto'",
+    "test": "jest --passWithNoTests"
+  }
+}
