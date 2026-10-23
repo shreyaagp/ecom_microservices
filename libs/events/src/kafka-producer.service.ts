@@ -69,22 +69,17 @@ export class KafkaProducerService implements OnModuleInit, OnModuleDestroy {
     };
 
     try {
-  const metadata = await this.producer.send(record);
+      const metadata = await this.producer.send(record);
 
-  this.logger.debug(
-    `Published ${topic} eventId=${envelope.eventId}`,
-  );
+      this.logger.debug(`Published ${topic} eventId=${envelope.eventId}`);
 
-  return metadata;
-} catch (error: unknown) {
-  const message =
-    error instanceof Error ? error.message : String(error);
+      return metadata;
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
 
-  this.logger.error(
-    `Failed to publish ${topic} eventId=${envelope.eventId}: ${message}`,
-  );
+      this.logger.error(`Failed to publish ${topic} eventId=${envelope.eventId}: ${message}`);
 
-  throw error;
-}
+      throw error;
+    }
   }
 }
